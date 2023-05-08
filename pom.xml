@@ -28,15 +28,21 @@
   </parent>
 
   <groupId>org.commonjava.indy</groupId>
-  <artifactId>indy-client-modules</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <artifactId>indy-clients-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>3.2.0-SNAPSHOT</version>
 
-  <name>Indy :: Client :: Modules</name>
+  <name>Indy :: Client APIs :: Parent</name>
+
+  <modules>
+    <module>core-java</module>
+    <module>client-addons</module>
+  </modules>
 
   <scm>
-    <connection>scm:git:https://github.com/commonjava/indy-client-modules</connection>
-    <developerConnection>scm:git:https://github.com/commonjava/indy-client-modules</developerConnection>
-    <url>http://github.com/Commonjava/indy-client-modules</url>
+    <connection>scm:git:https://github.com/commonjava/indy-client</connection>
+    <developerConnection>scm:git:https://github.com/commonjava/indy-client</developerConnection>
+    <url>http://github.com/Commonjava/indy-client</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -51,6 +57,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.commonjava.indy</groupId>
+        <artifactId>indy-client-core-java</artifactId>
+        <version>3.2.0-SNAPSHOT</version>
+      </dependency>
       <dependency>
         <groupId>org.commonjava.util</groupId>
         <artifactId>jhttpc</artifactId>
@@ -104,53 +115,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>jhttpc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>o11yphant-trace-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>o11yphant-trace-honeycomb</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>io.undertow</groupId>
-          <artifactId>undertow-servlet</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>o11yphant-trace-otel</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>o11yphant-trace-helper-jhttpc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>o11yphant-metrics-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.swagger</groupId>
-      <artifactId>swagger-annotations</artifactId>
-    </dependency>
-  </dependencies>
 </project>
