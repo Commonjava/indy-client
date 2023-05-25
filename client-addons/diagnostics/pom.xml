@@ -22,19 +22,22 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.commonjava.indy</groupId>
-    <artifactId>indy-clients-parent</artifactId>
+    <artifactId>indy-client-addons</artifactId>
     <version>3.3.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>indy-client-addons</artifactId>
-  <packaging>pom</packaging>
-  <name>Indy :: Client Add-Ons :: Parent</name>
-  <modules>
-    <module>content-browse</module>
-    <module>folo</module>
-    <module>promote</module>
-    <module>koji</module>
-    <module>diagnostics</module>
-  </modules>
+  <artifactId>indy-diagnostics-client-java</artifactId>
+  <name>Indy :: Add-Ons :: Diagnostic Tools :: Java Client</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.commonjava.indy</groupId>
+      <artifactId>indy-client-core-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>
