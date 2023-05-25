@@ -23,6 +23,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 public class IndyResponseErrorDetails
@@ -38,7 +39,7 @@ public class IndyResponseErrorDetails
 
     private final String body;
 
-    public IndyResponseErrorDetails(final HttpResponse response )
+    public IndyResponseErrorDetails( final HttpResponse response )
     {
         final StatusLine sl = response.getStatusLine();
         this.code = sl.getStatusCode();

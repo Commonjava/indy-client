@@ -36,7 +36,8 @@
 
   <modules>
     <module>core-java</module>
-    <module>client-addons</module>
+    <module>addons-client</module>
+    <module>models</module>
   </modules>
 
   <scm>
@@ -48,19 +49,76 @@
 
   <properties>
     <jhttpcVersion>1.12</jhttpcVersion>
+    <atlasVersion>1.1.1</atlasVersion>
+
     <o11yphantVersion>1.8</o11yphantVersion>
     <httpclientVersion>4.5.9</httpclientVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <commonsioVersion>2.11.0</commonsioVersion>
     <swaggerVersion>1.6.6</swaggerVersion>
+    <annotationVersion>1.3.2</annotationVersion>
+    <jacksonVersion>2.13.3</jacksonVersion>
+    <httpTestserverVersion>1.4</httpTestserverVersion>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.commonjava.indy</groupId>
+        <artifactId>indy-model-core-java</artifactId>
+        <version>3.3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.indy</groupId>
+        <artifactId>indy-promote-model-java</artifactId>
+        <version>3.3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.indy</groupId>
+        <artifactId>indy-koji-model-java</artifactId>
+        <version>3.3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.indy</groupId>
+        <artifactId>indy-folo-model-java</artifactId>
+        <version>3.3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.indy</groupId>
+        <artifactId>indy-content-browse-model-java</artifactId>
+        <version>3.3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.indy</groupId>
         <artifactId>indy-client-core-java</artifactId>
         <version>3.3.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.indy</groupId>
+        <artifactId>indy-test-fixtures-core</artifactId>
+        <version>3.2.0-SNAPSHOT</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.atlas</groupId>
+        <artifactId>atlas-identities</artifactId>
+        <version>${atlasVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.atlas</groupId>
+        <artifactId>atlas-bindings-jackson-identities</artifactId>
+        <version>${atlasVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.atlas</groupId>
+        <artifactId>atlas-relationships-api</artifactId>
+        <version>${atlasVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.util</groupId>
+        <artifactId>http-testserver</artifactId>
+        <version>${httpTestserverVersion}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.commonjava.util</groupId>
@@ -113,6 +171,65 @@
         <version>${swaggerVersion}</version>
         <scope>provided</scope>
       </dependency>
+      <dependency>
+        <groupId>org.commonjava.atservice</groupId>
+        <artifactId>atservice-processor</artifactId>
+        <version>0.1</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>${annotationVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jacksonVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jacksonVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jacksonVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.7</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.atservice</groupId>
+        <artifactId>atservice-annotation</artifactId>
+        <version>0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.15</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>2.0</version>
+        <scope>provided</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+  </dependencies>
 </project>

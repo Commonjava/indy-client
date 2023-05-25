@@ -16,7 +16,8 @@
 package org.commonjava.indy.client.core;
 
 import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.commonjava.indy.model.core.io.IndyObjectMapper;
+
 import java.util.Collections;
 
 public abstract class IndyClientModule
@@ -47,7 +48,7 @@ public abstract class IndyClientModule
         return http;
     }
 
-    protected ObjectMapper getObjectMapper()
+    protected IndyObjectMapper getObjectMapper()
     {
         return http.getObjectMapper();
     }

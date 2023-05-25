@@ -16,22 +16,30 @@
 package org.commonjava.indy.client.core;
 
 import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.commonjava.indy.client.core.auth.IndyClientAuthenticator;
 import org.commonjava.indy.client.core.module.IndyContentClientModule;
 import org.commonjava.indy.client.core.module.IndyStoresClientModule;
+import org.commonjava.indy.inject.IndyVersioningProvider;
+import org.commonjava.indy.model.core.io.IndyObjectMapper;
+import org.commonjava.indy.stats.IndyVersioning;
 import org.commonjava.o11yphant.trace.TracerConfiguration;
 import org.commonjava.util.jhttpc.auth.PasswordManager;
 import org.commonjava.util.jhttpc.model.SiteConfig;
+
 import java.io.Closeable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.commonjava.indy.IndyRequestConstants.HEADER_COMPONENT_ID;
 
 @SuppressWarnings( "unused" )
 public class Indy
         implements Closeable
 {
-
-    public static final String HEADER_COMPONENT_ID = "component-id";
 
     private String apiVersion;
 
@@ -40,7 +48,7 @@ public class Indy
     private final Set<IndyClientModule> moduleRegistry;
 
     @Deprecated
-    public Indy(final String baseUrl, final IndyClientModule... modules )
+    public Indy( final String baseUrl, final IndyClientModule... modules )
             throws IndyClientException
     {
         this( null, null, Arrays.asList( modules ), IndyClientHttp.defaultSiteConfig( baseUrl ) );
@@ -54,53 +62,53 @@ public class Indy
     }
 
     @Deprecated
-    public Indy( final String baseUrl, final ObjectMapper mapper, final IndyClientModule... modules )
+    public Indy( final String baseUrl, final IndyObjectMapper mapper, final IndyClientModule... modules )
             throws IndyClientException
     {
         this( null, mapper, Arrays.asList( modules ), IndyClientHttp.defaultSiteConfig( baseUrl ) );
     }
 
     @Deprecated
-    public Indy(final String baseUrl, final IndyClientAuthenticator authenticator, final ObjectMapper mapper,
-                final IndyClientModule... modules )
+    public Indy( final String baseUrl, final IndyClientAuthenticator authenticator, final IndyObjectMapper mapper,
+                 final IndyClientModule... modules )
             throws IndyClientException
     {
         this( authenticator, mapper, Arrays.asList( modules ), IndyClientHttp.defaultSiteConfig( baseUrl ) );
     }
 
     @Deprecated
-    public Indy(final String baseUrl, final Collection<IndyClientModule> modules )
+    public Indy( final String baseUrl, final Collection<IndyClientModule> modules )
             throws IndyClientException
     {
         this( null, null, modules, IndyClientHttp.defaultSiteConfig( baseUrl ) );
     }
 
     @Deprecated
-    public Indy(final String baseUrl, final IndyClientAuthenticator authenticator,
-                final Collection<IndyClientModule> modules )
+    public Indy( final String baseUrl, final IndyClientAuthenticator authenticator,
+                 final Collection<IndyClientModule> modules )
             throws IndyClientException
     {
         this( authenticator, null, modules, IndyClientHttp.defaultSiteConfig( baseUrl ) );
     }
 
     @Deprecated
-    public Indy(final String baseUrl, final ObjectMapper mapper, final Collection<IndyClientModule> modules )
+    public Indy( final String baseUrl, final IndyObjectMapper mapper, final Collection<IndyClientModule> modules )
             throws IndyClientException
     {
         this( null, mapper, modules, IndyClientHttp.defaultSiteConfig( baseUrl ) );
     }
 
     @Deprecated
-    public Indy(final String baseUrl, final IndyClientAuthenticator authenticator, final ObjectMapper mapper,
-                final Collection<IndyClientModule> modules )
+    public Indy( final String baseUrl, final IndyClientAuthenticator authenticator, final IndyObjectMapper mapper,
+                 final Collection<IndyClientModule> modules )
             throws IndyClientException
     {
         this( authenticator, mapper, modules, IndyClientHttp.defaultSiteConfig( baseUrl ) );
     }
 
     @Deprecated
-    public Indy(final IndyClientAuthenticator authenticator, final ObjectMapper mapper,
-                final Collection<IndyClientModule> modules, SiteConfig location )
+    public Indy( final IndyClientAuthenticator authenticator, final IndyObjectMapper mapper,
+                 final Collection<IndyClientModule> modules, SiteConfig location )
             throws IndyClientException
     {
         this( location, authenticator, mapper,
@@ -108,8 +116,8 @@ public class Indy
     }
 
     @Deprecated
-    public Indy(final SiteConfig location, final IndyClientAuthenticator authenticator, final ObjectMapper mapper,
-                final IndyClientModule... modules )
+    public Indy( final SiteConfig location, final IndyClientAuthenticator authenticator, final IndyObjectMapper mapper,
+                 final IndyClientModule... modules )
             throws IndyClientException
     {
         this( location, authenticator, mapper, Collections.emptyMap(), modules );
@@ -126,11 +134,12 @@ public class Indy
      * @deprecated - since 3.1.0, we have new {@link Builder} to set up the indy client, so please use it instead in future
      */
     @Deprecated
-    public Indy(final SiteConfig location, final IndyClientAuthenticator authenticator, final ObjectMapper mapper,
-                final Map<String, String> mdcCopyMappings, final IndyClientModule... modules )
+    public Indy( final SiteConfig location, final IndyClientAuthenticator authenticator, final IndyObjectMapper mapper,
+                 final Map<String, String> mdcCopyMappings, final IndyClientModule... modules )
             throws IndyClientException
     {
-        this.http = new IndyClientHttp( authenticator, mapper == null ? new ObjectMapper() : mapper, location,
+        loadApiVersion();
+        this.http = new IndyClientHttp( authenticator, mapper == null ? new IndyObjectMapper( true ) : mapper, location,
                                         getApiVersion(), mdcCopyMappings );
 
         this.moduleRegistry = new HashSet<>();
@@ -148,7 +157,7 @@ public class Indy
      * @deprecated - since 3.1.0, we have new {@link Builder} to set up the indy client, so please use it instead in future
      */
     @Deprecated
-    public Indy(SiteConfig location, PasswordManager passwordManager, IndyClientModule... modules )
+    public Indy( SiteConfig location, PasswordManager passwordManager, IndyClientModule... modules )
             throws IndyClientException
     {
         this( location, passwordManager, null, modules );
@@ -158,12 +167,13 @@ public class Indy
      * @deprecated - since 3.1.0, we have new {@link Builder} to set up the indy client, so please use it instead in future
      */
     @Deprecated
-    public Indy(SiteConfig location, PasswordManager passwordManager, ObjectMapper objectMapper,
-                IndyClientModule... modules )
+    public Indy( SiteConfig location, PasswordManager passwordManager, IndyObjectMapper objectMapper,
+                 IndyClientModule... modules )
             throws IndyClientException
     {
+        loadApiVersion();
         this.http =
-                new IndyClientHttp( passwordManager, objectMapper == null ? new ObjectMapper() : objectMapper,
+                new IndyClientHttp( passwordManager, objectMapper == null ? new IndyObjectMapper( true ) : objectMapper,
                                     location, getApiVersion() );
 
         this.moduleRegistry = new HashSet<>();
@@ -176,8 +186,9 @@ public class Indy
         }
     }
 
-    private Indy(final Set<IndyClientModule> modules )
+    private Indy( final Set<IndyClientModule> modules )
     {
+        loadApiVersion();
         this.moduleRegistry = new HashSet<>();
         moduleRegistry.addAll( modules );
     }
@@ -195,7 +206,7 @@ public class Indy
 
         private SiteConfig location;
 
-        private ObjectMapper objectMapper;
+        private IndyObjectMapper objectMapper;
 
         private IndyClientAuthenticator authenticator;
 
@@ -232,7 +243,7 @@ public class Indy
             return this;
         }
 
-        public Builder setObjectMapper( ObjectMapper objectMapper )
+        public Builder setObjectMapper( IndyObjectMapper objectMapper )
         {
             this.objectMapper = objectMapper;
             return this;
@@ -263,7 +274,7 @@ public class Indy
             final Indy indy = new Indy( modules );
             if ( this.objectMapper == null )
             {
-                this.objectMapper = new ObjectMapper();
+                this.objectMapper = new IndyObjectMapper( true );
             }
 
             indy.http = IndyClientHttp.builder()
@@ -303,6 +314,12 @@ public class Indy
     public void close()
     {
         http.close();
+    }
+
+    public IndyVersioning getVersionInfo()
+            throws IndyClientException
+    {
+        return http.get( "/stats/version-info", IndyVersioning.class );
     }
 
     public IndyStoresClientModule stores()
@@ -388,5 +405,10 @@ public class Indy
     public String getApiVersion()
     {
         return apiVersion;
+    }
+
+    private void loadApiVersion()
+    {
+        this.apiVersion = new IndyVersioningProvider().getVersioningInstance().getApiVersion();
     }
 }

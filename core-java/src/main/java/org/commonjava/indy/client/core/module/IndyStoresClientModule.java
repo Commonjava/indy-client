@@ -19,15 +19,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.commonjava.indy.client.core.IndyClientException;
 import org.commonjava.indy.client.core.IndyClientModule;
 import org.commonjava.indy.client.core.util.UrlUtils;
-import org.commonjava.indy.client.core.model.ArtifactStore;
-import org.commonjava.indy.client.core.model.Group;
-import org.commonjava.indy.client.core.model.HostedRepository;
-import org.commonjava.indy.client.core.model.RemoteRepository;
-import org.commonjava.indy.client.core.model.StoreKey;
-import org.commonjava.indy.client.core.model.StoreType;
-import org.commonjava.indy.client.core.model.store.StoreListingDTO;
+import org.commonjava.indy.model.core.ArtifactStore;
+import org.commonjava.indy.model.core.Group;
+import org.commonjava.indy.model.core.HostedRepository;
+import org.commonjava.indy.model.core.RemoteRepository;
+import org.commonjava.indy.model.core.StoreKey;
+import org.commonjava.indy.model.core.StoreType;
+import org.commonjava.indy.model.core.dto.StoreListingDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.commonjava.indy.pkg.maven.model.MavenPackageTypeDescriptor.MAVEN_PKG_KEY;
 
 public class IndyStoresClientModule
     extends IndyClientModule
@@ -47,10 +49,24 @@ public class IndyStoresClientModule
                                       value, type );
     }
 
+    @Deprecated
+    public boolean exists( final StoreType type, final String name )
+        throws IndyClientException
+    {
+        return exists( new StoreKey( MAVEN_PKG_KEY, type, name ) );
+    }
+
     public boolean exists( final StoreKey key )
             throws IndyClientException
     {
         return http.exists( UrlUtils.buildUrl( STORE_BASEPATH, key.getPackageType(), key.getType().singularEndpointName(), key.getName() ) );
+    }
+
+    @Deprecated
+    public void delete( final StoreType type, final String name, final String changelog )
+        throws IndyClientException
+    {
+        delete( new StoreKey( MAVEN_PKG_KEY, type, name ), changelog );
     }
 
     public void delete( final StoreKey key, final String changelog )
@@ -74,6 +90,13 @@ public class IndyStoresClientModule
         return http.put( UrlUtils.buildUrl( STORE_BASEPATH, store.getPackageType(), store.getType()
                                                                            .singularEndpointName(), store.getName() ),
                          store );
+    }
+
+    @Deprecated
+    public <T extends ArtifactStore> T load( StoreType type, String name, final Class<T> cls )
+            throws IndyClientException
+    {
+        return load( new StoreKey( MAVEN_PKG_KEY, type, name ), cls );
     }
 
     public <T extends ArtifactStore> T load( StoreKey key, final Class<T> cls )
