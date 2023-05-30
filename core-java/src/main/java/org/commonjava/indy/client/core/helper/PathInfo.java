@@ -15,9 +15,9 @@
  */
 package org.commonjava.indy.client.core.helper;
 
+import org.commonjava.indy.model.util.HttpUtils;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -30,8 +30,6 @@ public class PathInfo
     private final long contentLength;
 
     private final Date lastModified;
-
-    private static final String DATE_HEADER_FMT = "EEE, dd MMM yyyy HH:mm:ss";
 
     public PathInfo( final Map<String, String> headers )
     {
@@ -56,7 +54,7 @@ public class PathInfo
             Date lastModified;
             try
             {
-                lastModified = lm == null ? null : parseDateHeader( lm );
+                lastModified = lm == null ? null : HttpUtils.parseDateHeader( lm );
             }
             catch ( final ParseException e )
             {
@@ -94,9 +92,4 @@ public class PathInfo
                               contentType, contentLength, lastModified );
     }
 
-    private Date parseDateHeader( final String date )
-            throws ParseException
-    {
-        return new SimpleDateFormat( DATE_HEADER_FMT ).parse( date );
-    }
 }

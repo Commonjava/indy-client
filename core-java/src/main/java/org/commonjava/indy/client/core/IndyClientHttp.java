@@ -16,11 +16,21 @@
 package org.commonjava.indy.client.core;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.InputStreamEntity;
@@ -33,6 +43,9 @@ import org.commonjava.indy.client.core.auth.IndyClientAuthenticator;
 import org.commonjava.indy.client.core.helper.HttpResources;
 import org.commonjava.indy.client.core.metric.ClientMetricManager;
 import org.commonjava.indy.client.core.metric.ClientMetrics;
+import org.commonjava.indy.inject.IndyVersioningProvider;
+import org.commonjava.indy.model.core.ArtifactStore;
+import org.commonjava.indy.model.core.io.IndyObjectMapper;
 import org.commonjava.o11yphant.jhttpc.SpanningHttpFactory;
 import org.commonjava.o11yphant.trace.TracerConfiguration;
 import org.commonjava.util.jhttpc.HttpFactory;
@@ -44,20 +57,28 @@ import org.commonjava.util.jhttpc.model.SiteConfigBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.commonjava.indy.IndyContentConstants.CHECK_CACHE_ONLY;
 import static org.commonjava.indy.client.core.helper.HttpResources.cleanupResources;
 import static org.commonjava.indy.client.core.helper.HttpResources.entityToString;
 import static org.commonjava.indy.client.core.metric.ClientMetricConstants.HEADER_CLIENT_API;
 import static org.commonjava.indy.client.core.metric.ClientMetricConstants.HEADER_CLIENT_TRACE_ID;
 import static org.commonjava.indy.client.core.util.UrlUtils.buildUrl;
+import static org.commonjava.indy.stats.IndyVersioning.HEADER_INDY_API_VERSION;
 
 @SuppressWarnings( "unused" )
 public class IndyClientHttp
@@ -65,13 +86,9 @@ public class IndyClientHttp
 {
     public static final int GLOBAL_MAX_CONNECTIONS = 20;
 
-    public static final String CHECK_CACHE_ONLY = "cache-only";
-
-    public final static String HEADER_INDY_API_VERSION = "Indy-API-Version"; // the API version for the requester
-
     private final Logger logger = LoggerFactory.getLogger( getClass() );
 
-    private final ObjectMapper objectMapper;
+    private final IndyObjectMapper objectMapper;
 
     private final SiteConfig location;
 
@@ -96,7 +113,7 @@ public class IndyClientHttp
      * @deprecated - since 3.1.0, we have introduced new {@link Builder} to set this up, so please try to use it
      */
     @Deprecated
-    public IndyClientHttp( final IndyClientAuthenticator authenticator, final ObjectMapper mapper,
+    public IndyClientHttp( final IndyClientAuthenticator authenticator, final IndyObjectMapper mapper,
                            SiteConfig location, String apiVersion, Map<String, String> mdcCopyMappings )
             throws IndyClientException
     {
@@ -110,8 +127,8 @@ public class IndyClientHttp
      * @deprecated - since 3.1.0, we have introduced new {@link Builder} to set this up, so please try to use it
      */
     @Deprecated
-    public IndyClientHttp(final PasswordManager passwordManager, final ObjectMapper mapper, SiteConfig location,
-                          String apiVersion )
+    public IndyClientHttp( final PasswordManager passwordManager, final IndyObjectMapper mapper, SiteConfig location,
+                           String apiVersion )
             throws IndyClientException
     {
         this( mapper, location, apiVersion );
@@ -120,7 +137,7 @@ public class IndyClientHttp
         factory = new SpanningHttpFactory( new HttpFactory( passwordManager ), metricManager.getTraceManager() );
     }
 
-    private IndyClientHttp(final ObjectMapper mapper, SiteConfig location, String apiVersion )
+    private IndyClientHttp( final IndyObjectMapper mapper, SiteConfig location, String apiVersion )
             throws IndyClientException
     {
         this.objectMapper = mapper;
@@ -142,7 +159,7 @@ public class IndyClientHttp
 
         private IndyClientAuthenticator authenticator;
 
-        private ObjectMapper objectMapper;
+        private IndyObjectMapper objectMapper;
 
         private SiteConfig location;
 
@@ -168,7 +185,7 @@ public class IndyClientHttp
             return this;
         }
 
-        public Builder setObjectMapper( ObjectMapper objectMapper )
+        public Builder setObjectMapper( IndyObjectMapper objectMapper )
         {
             this.objectMapper = objectMapper;
             return this;
@@ -254,8 +271,10 @@ public class IndyClientHttp
         String hcUserAgent =
                 VersionInfo.getUserAgent( "Apache-HttpClient", "org.apache.http.client", HttpClientBuilder.class );
 
+        String indyVersion = new IndyVersioningProvider().getVersioningInstance().getVersion();
+
         addDefaultHeader( "User-Agent",
-                          String.format( "Indy (api: %s) via %s", apiVersion, hcUserAgent ) );
+                          String.format( "Indy/%s (api: %s) via %s", indyVersion, apiVersion, hcUserAgent ) );
     }
 
     private String addClientTraceHeader()
@@ -906,7 +925,7 @@ public class IndyClientHttp
         {
             client = newClient();
             addLoggingMDCToHeaders( delete );
-            delete.setHeader( "changelog", changelog );
+            delete.setHeader( ArtifactStore.METADATA_CHANGELOG, changelog );
 
             response = client.execute( delete, newContext() );
             final StatusLine sl = response.getStatusLine();
@@ -1086,7 +1105,7 @@ public class IndyClientHttp
         req.addHeader( "Content-Type", "application/json" );
     }
 
-    public ObjectMapper getObjectMapper()
+    public IndyObjectMapper getObjectMapper()
     {
         return objectMapper;
     }

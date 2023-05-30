@@ -16,36 +16,81 @@
 package org.commonjava.indy.client.core.module;
 
 import org.apache.commons.io.IOUtils;
+import org.commonjava.indy.IndyContentConstants;
 import org.commonjava.indy.client.core.IndyClientException;
 import org.commonjava.indy.client.core.IndyClientModule;
 import org.commonjava.indy.client.core.helper.HttpResources;
 import org.commonjava.indy.client.core.helper.PathInfo;
-import org.commonjava.indy.client.core.model.StoreKey;
+import org.commonjava.indy.model.core.StoreKey;
+import org.commonjava.indy.model.core.StoreType;
+import org.commonjava.indy.model.core.dto.DirectoryListingDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 
 import static org.commonjava.indy.client.core.util.UrlUtils.buildUrl;
+import static org.commonjava.indy.pkg.maven.model.MavenPackageTypeDescriptor.MAVEN_PKG_KEY;
 
 public class IndyContentClientModule
     extends IndyClientModule
 {
 
-    public static final String CHECK_CACHE_ONLY = "cache-only";
-
     private static final String CONTENT_BASE = "content";
+
+    @Deprecated
+    public String contentUrl( final StoreType type, final String name, final String... path )
+    {
+        return contentUrl( new StoreKey( MAVEN_PKG_KEY, type, name ), path );
+    }
     
     public String contentUrl( final StoreKey key, final String... path )
     {
         return buildUrl( http.getBaseUrl(), aggregatePathParts( key, path ) );
     }
+
+    @Deprecated
+    public String contentPath( final StoreType type, final String name, final String... path )
+    {
+        return contentPath( new StoreKey( MAVEN_PKG_KEY, type, name ), path );
+    }
     
     public String contentPath( final StoreKey key, final String... path )
     {
         return buildUrl( null, aggregatePathParts( key, path ) );
+    }
+
+    /**
+     * Please do not use this method to get list content, because new content browse is not using html but using json now,
+     * so this method will return wrong result now. Please use {@link org.commonjava.indy.content.browse.client.IndyContentBrowseClientModule} instead.
+     * This method will be removed in recent release.
+     */
+    @Deprecated
+    public DirectoryListingDTO listContents( final StoreKey key, final String path )
+            throws IndyClientException
+    {
+        String p = path;
+        if ( !path.endsWith( "/" ) )
+        {
+            p += "/";
+        }
+
+        return http.get( contentPath( key, p ), DirectoryListingDTO.class );
+    }
+
+    /**
+     * Please do not use this method to get list content, because new content browse is not using html but using json now,
+     * so this method will return wrong result now. Please use {@link org.commonjava.indy.content.browse.client.IndyContentBrowseClientModule} instead.
+     * This method will be removed in recent release.
+     */
+    @Deprecated
+    public DirectoryListingDTO listContents( final StoreType type, final String name, final String path )
+            throws IndyClientException
+    {
+        return listContents( new StoreKey( MAVEN_PKG_KEY, type, name ), path );
     }
 
     public void deleteCache( final StoreKey key, final String path ) // delete cached file for group/remote
@@ -59,6 +104,13 @@ public class IndyContentClientModule
     {
         http.delete( contentPath( key, path ) );
     }
+
+    @Deprecated
+    public void delete( final StoreType type, final String name, final String path )
+            throws IndyClientException
+    {
+        delete( new StoreKey( MAVEN_PKG_KEY, type, name ), path );
+    }
     
     public boolean exists( final StoreKey key, final String path )
             throws IndyClientException
@@ -70,8 +122,22 @@ public class IndyContentClientModule
             throws IndyClientException
     {
         return http.exists( contentPath( key, path ),
-                            () -> Collections.<String, String>singletonMap( CHECK_CACHE_ONLY,
+                            () -> Collections.<String, String>singletonMap( IndyContentConstants.CHECK_CACHE_ONLY,
                                                                             Boolean.toString( cacheOnly ) ) );
+    }
+
+    @Deprecated
+    public boolean exists( final StoreType type, final String name, final String path )
+            throws IndyClientException
+    {
+        return exists( new StoreKey( MAVEN_PKG_KEY, type, name ), path );
+    }
+    
+    @Deprecated
+    public Boolean exists( StoreType type, String name, String path, boolean cacheOnly )
+            throws IndyClientException
+    {
+        return exists( new StoreKey( MAVEN_PKG_KEY, type, name ), path, cacheOnly );
     }
 
     public void store( final StoreKey key, final String path, final InputStream stream )
@@ -80,11 +146,25 @@ public class IndyContentClientModule
         http.putWithStream( contentPath( key, path ), stream );
     }
 
+    @Deprecated
+    public void store( final StoreType type, final String name, final String path, final InputStream stream )
+            throws IndyClientException
+    {
+        store( new StoreKey( MAVEN_PKG_KEY, type, name ), path, stream );
+    }
+
     public PathInfo getInfo( final StoreKey key, final String path )
         throws IndyClientException
     {
         final Map<String, String> headers = http.head( contentPath( key, path ) );
         return new PathInfo( headers );
+    }
+
+    @Deprecated
+    public PathInfo getInfo( final StoreType type, final String name, final String path )
+            throws IndyClientException
+    {
+        return getInfo( new StoreKey( MAVEN_PKG_KEY, type, name ), path );
     }
     
     public InputStream get( final StoreKey key, final String path )
@@ -118,6 +198,13 @@ public class IndyContentClientModule
         }
     }
 
+    @Deprecated
+    public InputStream get( final StoreType type, final String name, final String path )
+            throws IndyClientException
+    {
+        return get( new StoreKey( MAVEN_PKG_KEY, type, name ), path );
+    }
+    
     private String[] aggregatePathParts( final StoreKey key, final String... path )
     {
         final String[] parts = new String[path.length + 4];

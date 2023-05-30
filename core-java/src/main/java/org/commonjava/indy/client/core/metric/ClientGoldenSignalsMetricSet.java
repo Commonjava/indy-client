@@ -18,6 +18,7 @@ package org.commonjava.indy.client.core.metric;
 import org.commonjava.indy.client.core.inject.ClientMetricSet;
 import org.commonjava.o11yphant.metrics.sli.GoldenSignalsFunctionMetrics;
 import org.commonjava.o11yphant.metrics.sli.GoldenSignalsMetricSet;
+
 import java.util.Arrays;
 import java.util.Collection;
 

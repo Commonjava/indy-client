@@ -20,6 +20,7 @@ import org.commonjava.indy.client.core.inject.ClientMetricConfig;
 import org.commonjava.o11yphant.honeycomb.HoneycombConfiguration;
 import org.commonjava.o11yphant.otel.OtelConfiguration;
 import org.commonjava.o11yphant.trace.TracerConfiguration;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

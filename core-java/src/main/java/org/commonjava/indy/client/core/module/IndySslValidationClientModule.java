@@ -18,8 +18,8 @@ package org.commonjava.indy.client.core.module;
 import org.commonjava.indy.client.core.IndyClientException;
 import org.commonjava.indy.client.core.IndyClientModule;
 import org.commonjava.indy.client.core.util.UrlUtils;
-import org.commonjava.indy.client.core.model.ArtifactStoreValidateData;
-import org.commonjava.indy.client.core.model.RemoteRepository;
+import org.commonjava.indy.client.core.data.ArtifactStoreValidateData;
+import org.commonjava.indy.model.core.RemoteRepository;
 import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 

@@ -21,12 +21,13 @@ import org.commonjava.o11yphant.metrics.api.Metric;
 import org.commonjava.o11yphant.metrics.api.Timer;
 import org.commonjava.o11yphant.trace.spi.SpanFieldsInjector;
 import org.commonjava.o11yphant.trace.spi.adapter.SpanAdapter;
+
 import java.util.Map;
 
 public class ClientGoldenSignalsSpanFieldsInjector
                 implements SpanFieldsInjector
 {
-    private final ClientGoldenSignalsMetricSet goldenSignalsMetricSet;
+    private ClientGoldenSignalsMetricSet goldenSignalsMetricSet;
 
     public ClientGoldenSignalsSpanFieldsInjector( ClientGoldenSignalsMetricSet goldenSignalsMetricSet )
     {

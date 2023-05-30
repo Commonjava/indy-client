@@ -18,13 +18,23 @@ package org.commonjava.indy.client.core.metric;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.commonjava.o11yphant.metrics.TrafficClassifier;
+
 import javax.enterprise.inject.Alternative;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.join;
-import static org.commonjava.indy.client.core.metric.ClientMetricConstants.*;
+import static org.commonjava.indy.client.core.metric.ClientMetricConstants.CLIENT_CONTENT;
+import static org.commonjava.indy.client.core.metric.ClientMetricConstants.CLIENT_FOLO_ADMIN;
+import static org.commonjava.indy.client.core.metric.ClientMetricConstants.CLIENT_FOLO_CONTENT;
+import static org.commonjava.indy.client.core.metric.ClientMetricConstants.CLIENT_PROMOTE;
+import static org.commonjava.indy.client.core.metric.ClientMetricConstants.CLIENT_REPO_MGMT;
 
 
 @Alternative

@@ -22,6 +22,7 @@ import org.commonjava.o11yphant.metrics.conf.DefaultMetricsConfig;
 import org.commonjava.o11yphant.metrics.conf.MetricsConfig;
 import org.commonjava.o11yphant.metrics.sli.GoldenSignalsMetricSet;
 import org.commonjava.o11yphant.metrics.system.StoragePathProvider;
+
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 

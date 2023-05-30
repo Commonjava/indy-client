@@ -28,6 +28,7 @@ import org.apache.http.util.EntityUtils;
 import org.commonjava.indy.client.core.metric.ClientMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.Closeable;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class HttpResources
 
     private final CloseableHttpClient client;
 
-    private final ClientMetrics metrics;
+    private ClientMetrics metrics;
 
     private InputStream responseEntityStream;
 

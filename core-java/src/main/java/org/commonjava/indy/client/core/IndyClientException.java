@@ -15,6 +15,7 @@
  */
 package org.commonjava.indy.client.core;
 
+import org.commonjava.indy.IndyException;
 
 import java.io.NotSerializableException;
 import java.io.Serializable;
