@@ -18,7 +18,7 @@
       <artifactId>indy-client-core-java</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.commonjava.indy</groupId>
+      <groupId>org.commonjava.indy.service</groupId>
       <artifactId>indy-folo-model-java</artifactId>
     </dependency>
     <dependency>
