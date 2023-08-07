@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2011-2022 Red Hat, Inc. (https://github.com/Commonjava/indy)
+    Copyright (C) 2023 Red Hat, Inc. (https://github.com/Commonjava/indy-client)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.commonjava</groupId>
     <artifactId>commonjava</artifactId>
-    <version>17</version>
+    <version>18</version>
   </parent>
 
   <groupId>org.commonjava.indy</groupId>
@@ -33,6 +33,7 @@
   <version>3.3.0-SNAPSHOT</version>
 
   <name>Indy :: Client APIs :: Parent</name>
+  <inceptionYear>2023</inceptionYear>
 
   <modules>
     <module>core-java</module>
@@ -47,6 +48,10 @@
   </scm>
 
   <properties>
+    <projectOwner>Red Hat, Inc.</projectOwner>
+    <projectEmail>https://github.com/Commonjava/indy-client</projectEmail>
+    <javaVersion>11</javaVersion>
+
     <jhttpcVersion>1.12</jhttpcVersion>
     <atlasVersion>1.1.1</atlasVersion>
 
