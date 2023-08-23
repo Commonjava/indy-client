@@ -55,7 +55,7 @@
     <jhttpcVersion>1.12</jhttpcVersion>
     <atlasVersion>1.1.1</atlasVersion>
 
-    <o11yphantVersion>1.9-SNAPSHOT</o11yphantVersion>
+    <o11yphantVersion>1.9</o11yphantVersion>
     <httpclientVersion>4.5.9</httpclientVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <commonsioVersion>2.11.0</commonsioVersion>
