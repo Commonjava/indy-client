@@ -34,7 +34,7 @@ import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-@SuppressWarnings( { "rawtypes", "unused" } )
+@SuppressWarnings( { "unused" } )
 public class ClientMetricManager
 {
 
@@ -55,11 +55,23 @@ public class ClientMetricManager
 
     public ClientMetricManager( SiteConfig siteConfig )
     {
-        this.configuration = buildConfig( siteConfig );
+        buildConfig( siteConfig );
         buildTraceManager();
     }
 
     public ClientMetricManager( TracerConfiguration existedTraceConfig )
+    {
+        buildTraceConfig( existedTraceConfig );
+        buildTraceManager();
+    }
+
+    public ClientMetricManager( TraceManager traceManager )
+    {
+        buildTraceConfig( traceManager.getConfig() );
+        this.traceManager = traceManager;
+    }
+
+    private void buildTraceConfig( TracerConfiguration existedTraceConfig )
     {
         this.configuration = new ClientTracerConfiguration();
         this.configuration.setEnabled( existedTraceConfig.isEnabled() );
@@ -75,7 +87,6 @@ public class ClientMetricManager
             this.configuration.setGrpcHeaders( existedOtelConfig.getGrpcHeaders() );
             this.configuration.setGrpcResources( existedOtelConfig.getResources() );
         }
-        buildTraceManager();
     }
 
     private void buildTraceManager()
@@ -89,7 +100,7 @@ public class ClientMetricManager
             }
             this.traceManager = new TraceManager( plugin, new SpanFieldsDecorator(
                     Collections.singletonList( new ClientGoldenSignalsSpanFieldsInjector( metricSet ) ) ),
-                                                    configuration );
+                                                  configuration );
         }
     }
 
@@ -101,12 +112,11 @@ public class ClientMetricManager
         return new ClientMetrics( configuration.isEnabled(), request, functions, metricSet );
     }
 
-    private ClientTracerConfiguration buildConfig( SiteConfig siteConfig )
+    private void buildConfig( SiteConfig siteConfig )
     {
-        ClientTracerConfiguration config = new ClientTracerConfiguration();
-        config.setEnabled( siteConfig.isMetricEnabled() );
-        config.setBaseSampleRate( siteConfig.getBaseSampleRate() );
-        return config;
+        this.configuration = new ClientTracerConfiguration();
+        this.configuration.setEnabled( siteConfig.isMetricEnabled() );
+        this.configuration.setBaseSampleRate( siteConfig.getBaseSampleRate() );
     }
 
     private String getEndpointName( String method, String pathInfo )
