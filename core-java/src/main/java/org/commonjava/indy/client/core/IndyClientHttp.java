@@ -47,6 +47,7 @@ import org.commonjava.indy.inject.IndyVersioningProvider;
 import org.commonjava.indy.model.core.ArtifactStore;
 import org.commonjava.indy.model.core.io.IndyObjectMapper;
 import org.commonjava.o11yphant.jhttpc.SpanningHttpFactory;
+import org.commonjava.o11yphant.trace.TraceManager;
 import org.commonjava.o11yphant.trace.TracerConfiguration;
 import org.commonjava.util.jhttpc.HttpFactory;
 import org.commonjava.util.jhttpc.HttpFactoryIfc;
@@ -167,6 +168,8 @@ public class IndyClientHttp
 
         private TracerConfiguration existedTraceConfig;
 
+        private TraceManager existedTraceManager;
+
         private Map<String, String> mdcCopyMappings;
 
         private Builder()
@@ -209,6 +212,11 @@ public class IndyClientHttp
             return this;
         }
 
+        public Builder setExistedTraceManager( TraceManager traceManager )
+        {
+            this.existedTraceManager = traceManager;
+            return this;
+        }
 
         public Builder setMdcCopyMappings( Map<String, String> mdcCopyMappings )
         {
@@ -250,7 +258,11 @@ public class IndyClientHttp
             }
 
             ClientMetricManager metricManager;
-            if ( this.existedTraceConfig != null )
+            if ( this.existedTraceManager != null )
+            {
+                metricManager = new ClientMetricManager( this.existedTraceManager );
+            }
+            else if ( this.existedTraceConfig != null )
             {
                 metricManager = new ClientMetricManager( this.existedTraceConfig );
             }

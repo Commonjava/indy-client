@@ -22,6 +22,7 @@ import org.commonjava.indy.client.core.module.IndyStoresClientModule;
 import org.commonjava.indy.inject.IndyVersioningProvider;
 import org.commonjava.indy.model.core.io.IndyObjectMapper;
 import org.commonjava.indy.stats.IndyVersioning;
+import org.commonjava.o11yphant.trace.TraceManager;
 import org.commonjava.o11yphant.trace.TracerConfiguration;
 import org.commonjava.util.jhttpc.auth.PasswordManager;
 import org.commonjava.util.jhttpc.model.SiteConfig;
@@ -214,6 +215,8 @@ public class Indy
 
         private TracerConfiguration existedTraceConfig;
 
+        private TraceManager existedTraceManager;
+
         private Builder()
         {
         }
@@ -255,6 +258,12 @@ public class Indy
             return this;
         }
 
+        public Builder setExistedTraceManager( TraceManager traceManager )
+        {
+            this.existedTraceManager = traceManager;
+            return this;
+        }
+
         public Builder setAuthenticator( IndyClientAuthenticator authenticator )
         {
             this.authenticator = authenticator;
@@ -283,6 +292,7 @@ public class Indy
                                       .setLocation( this.location )
                                       .setPasswordManager( this.passwordManager )
                                       .setExistedTraceConfig( this.existedTraceConfig )
+                                      .setExistedTraceManager( this.existedTraceManager )
                                       .setMdcCopyMappings( this.mdcCopyMappings )
                                       .setObjectMapper( this.objectMapper )
                                       .build();
