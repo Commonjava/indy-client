@@ -30,7 +30,6 @@
 
   <modules>
     <module>client-java</module>
-    <module>model-java</module>
   </modules>
 
 </project>
