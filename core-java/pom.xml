@@ -33,10 +33,6 @@
       <artifactId>indy-model-core-java</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.commonjava.indy</groupId>
-      <artifactId>indy-test-fixtures-core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.commonjava.util</groupId>
       <artifactId>jhttpc</artifactId>
     </dependency>
@@ -67,6 +63,11 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.commonjava.indy</groupId>
+      <artifactId>indy-test-fixtures-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
