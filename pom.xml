@@ -92,11 +92,6 @@
         <artifactId>indy-promote-model-java</artifactId>
         <version>3.3.1-SNAPSHOT</version>
       </dependency>
-      <dependency>
-        <groupId>org.commonjava.indy</groupId>
-        <artifactId>indy-koji-model-java</artifactId>
-        <version>3.3.1-SNAPSHOT</version>
-      </dependency>
 
       <dependency>
         <groupId>org.commonjava.indy</groupId>
