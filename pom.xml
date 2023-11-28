@@ -16,9 +16,7 @@
     limitations under the License.
 
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -30,7 +28,7 @@
   <groupId>org.commonjava.indy</groupId>
   <artifactId>indy-clients-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.3.2-SNAPSHOT</version>
 
   <name>Indy :: Client APIs :: Parent</name>
   <inceptionYear>2023</inceptionYear>
@@ -55,15 +53,16 @@
     <jhttpcVersion>1.12</jhttpcVersion>
     <atlasVersion>1.1.1</atlasVersion>
 
-    <o11yphantVersion>1.9.1-SNAPSHOT</o11yphantVersion>
-    <httpclientVersion>4.5.9</httpclientVersion>
+    <indyModelVersion>1.4</indyModelVersion>
+    <o11yphantVersion>1.9.1</o11yphantVersion>
+    <httpclientVersion>4.5.13</httpclientVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
     <commonsioVersion>2.11.0</commonsioVersion>
     <swaggerVersion>1.6.6</swaggerVersion>
     <annotationVersion>1.3.2</annotationVersion>
-    <jacksonVersion>2.13.3</jacksonVersion>
+    <jacksonVersion>2.15.2</jacksonVersion>
     <httpTestserverVersion>1.4</httpTestserverVersion>
-    <logbackVersion>1.2.9</logbackVersion>
+    <logbackVersion>1.2.12</logbackVersion>
   </properties>
 
   <dependencyManagement>
@@ -71,33 +70,33 @@
       <dependency>
         <groupId>org.commonjava.indy.service</groupId>
         <artifactId>indy-model-core-java</artifactId>
-        <version>1.3-SNAPSHOT</version>
+        <version>${indyModelVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.commonjava.indy.service</groupId>
         <artifactId>indy-folo-model-java</artifactId>
-        <version>1.3-SNAPSHOT</version>
+        <version>${indyModelVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.indy.service</groupId>
+        <artifactId>indy-koji-model-java</artifactId>
+        <version>${indyModelVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.commonjava.indy.service</groupId>
+        <artifactId>indy-content-browse-model-java</artifactId>
+        <version>${indyModelVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.commonjava.indy</groupId>
         <artifactId>indy-promote-model-java</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.commonjava.indy</groupId>
-        <artifactId>indy-koji-model-java</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
+        <version>3.3.2-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.commonjava.indy</groupId>
-        <artifactId>indy-content-browse-model-java</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.commonjava.indy</groupId>
         <artifactId>indy-client-core-java</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
+        <version>3.3.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.commonjava.indy</groupId>
