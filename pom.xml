@@ -49,11 +49,9 @@
     <projectOwner>Red Hat, Inc.</projectOwner>
     <projectEmail>https://github.com/Commonjava/indy-client</projectEmail>
     <javaVersion>11</javaVersion>
-
     <jhttpcVersion>1.12</jhttpcVersion>
     <atlasVersion>1.1.1</atlasVersion>
-
-    <indyModelVersion>1.5-SNAPSHOT</indyModelVersion>
+    <indyModelVersion>1.5</indyModelVersion>
     <o11yphantVersion>1.9.1</o11yphantVersion>
     <httpclientVersion>4.5.13</httpclientVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
