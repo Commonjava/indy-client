@@ -25,7 +25,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.commonjava.indy.client.core.metric.ClientMetrics;
+import org.commonjava.indy.client.core.o11y.metric.ClientMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +33,7 @@ import java.io.Closeable;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
@@ -40,8 +41,8 @@ import static org.apache.commons.io.IOUtils.closeQuietly;
  * Contains request, response, and client references, for passing raw data streams and the like back to the caller without losing track of the 
  * resources that need to be closed when the caller is finished.
  * <br/>
- * <b>NOTE:</b> This class stores the response entity {@link InputStream}, and is NOT threadsafe!
- * 
+ * <b>NOTE:</b> This class stores the response entity {@link InputStream}, and is NOT thread safe!
+ *
  * @author jdcasey
  *
  */
@@ -55,7 +56,7 @@ public class HttpResources
 
     private final CloseableHttpClient client;
 
-    private ClientMetrics metrics;
+    private final ClientMetrics metrics;
 
     private InputStream responseEntityStream;
 
@@ -130,7 +131,7 @@ public class HttpResources
             stream = response.getEntity()
                              .getContent();
 
-            return IOUtils.toString( stream );
+            return IOUtils.toString( stream, Charset.defaultCharset() );
         }
         finally
         {
@@ -161,7 +162,6 @@ public class HttpResources
 
     @Override
     public void close()
-        throws IOException
     {
         Logger logger = LoggerFactory.getLogger( getClass() );
         logger.debug( "Closing resources for: {}", request == null ? "UNKNOWN" : request.getRequestLine().getUri() );
