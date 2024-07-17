@@ -29,6 +29,7 @@ import org.commonjava.indy.model.core.dto.StoreListingDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.commonjava.indy.client.core.util.UrlUtils.encode;
 import static org.commonjava.indy.pkg.maven.model.MavenPackageTypeDescriptor.MAVEN_PKG_KEY;
 
 public class IndyStoresClientModule
@@ -59,7 +60,7 @@ public class IndyStoresClientModule
     public boolean exists( final StoreKey key )
             throws IndyClientException
     {
-        return http.exists( UrlUtils.buildUrl( STORE_BASEPATH, key.getPackageType(), key.getType().singularEndpointName(), key.getName() ) );
+        return http.exists( UrlUtils.buildUrl( STORE_BASEPATH, key.getPackageType(), key.getType().singularEndpointName(), encode( key.getName() ) ) );
     }
 
     @Deprecated
@@ -72,7 +73,7 @@ public class IndyStoresClientModule
     public void delete( final StoreKey key, final String changelog )
             throws IndyClientException
     {
-        http.deleteWithChangelog( UrlUtils.buildUrl( STORE_BASEPATH, key.getPackageType(), key.getType().singularEndpointName(), key.getName() ), changelog );
+        http.deleteWithChangelog( UrlUtils.buildUrl( STORE_BASEPATH, key.getPackageType(), key.getType().singularEndpointName(), encode( key.getName() ) ), changelog );
     }
 
     public void delete( final StoreKey key, final String changelog, final boolean deleteContent )
@@ -80,7 +81,7 @@ public class IndyStoresClientModule
     {
         http.deleteWithChangelog(
                         UrlUtils.buildUrl( STORE_BASEPATH, key.getPackageType(), key.getType().singularEndpointName(),
-                                           key.getName(), deleteContent ? "?deleteContent=true" : "" ), changelog );
+                                           encode( key.getName() ), deleteContent ? "?deleteContent=true" : "" ), changelog );
     }
 
     public boolean update( final ArtifactStore store, final String changelog )
@@ -102,7 +103,7 @@ public class IndyStoresClientModule
     public <T extends ArtifactStore> T load( StoreKey key, final Class<T> cls )
         throws IndyClientException
     {
-        return http.get( UrlUtils.buildUrl( STORE_BASEPATH, key.getPackageType(), key.getType().singularEndpointName(), key.getName() ), cls );
+        return http.get( UrlUtils.buildUrl( STORE_BASEPATH, key.getPackageType(), key.getType().singularEndpointName(), encode( key.getName() ) ), cls );
     }
 
     public StoreListingDTO<HostedRepository> listHostedRepositories()

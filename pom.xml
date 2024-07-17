@@ -28,7 +28,7 @@
   <groupId>org.commonjava.indy</groupId>
   <artifactId>indy-clients-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.3.2-SNAPSHOT</version>
+  <version>3.3.3-SNAPSHOT</version>
 
   <name>Indy :: Client APIs :: Parent</name>
   <inceptionYear>2023</inceptionYear>
@@ -49,11 +49,9 @@
     <projectOwner>Red Hat, Inc.</projectOwner>
     <projectEmail>https://github.com/Commonjava/indy-client</projectEmail>
     <javaVersion>11</javaVersion>
-
     <jhttpcVersion>1.12</jhttpcVersion>
     <atlasVersion>1.1.1</atlasVersion>
-
-    <indyModelVersion>1.4</indyModelVersion>
+    <indyModelVersion>1.5</indyModelVersion>
     <o11yphantVersion>1.9.1</o11yphantVersion>
     <httpclientVersion>4.5.13</httpclientVersion>
     <slf4jVersion>1.7.36</slf4jVersion>
@@ -90,13 +88,13 @@
       <dependency>
         <groupId>org.commonjava.indy</groupId>
         <artifactId>indy-promote-model-java</artifactId>
-        <version>3.3.2-SNAPSHOT</version>
+        <version>3.3.3-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.commonjava.indy</groupId>
         <artifactId>indy-client-core-java</artifactId>
-        <version>3.3.2-SNAPSHOT</version>
+        <version>3.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.commonjava.indy</groupId>

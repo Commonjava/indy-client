@@ -15,9 +15,12 @@
  */
 package org.commonjava.indy.client.core.util;
 
+import org.commonjava.indy.client.core.IndyClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -193,4 +196,8 @@ public final class UrlUtils
         return sb.toString();
     }
 
+    public static String encode( String value )
+    {
+        return URLEncoder.encode( value, StandardCharsets.UTF_8 );
+    }
 }
