@@ -97,12 +97,6 @@
         <version>3.3.3-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.commonjava.indy</groupId>
-        <artifactId>indy-test-fixtures-core</artifactId>
-        <version>3.1.1</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.commonjava.atlas</groupId>
         <artifactId>atlas-identities</artifactId>
         <version>${atlasVersion}</version>
