@@ -144,8 +144,6 @@ public class IndyFoloAdminClientModule
     public boolean sealTrackingRecord( String trackingId )
             throws IndyClientException
     {
-        http.connect();
-
         HttpPost request = http.newRawPost( UrlUtils.buildUrl( http.getBaseUrl(), "/folo/admin", trackingId, "record" ) );
         HttpResources resources = null;
         try

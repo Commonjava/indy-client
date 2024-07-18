@@ -37,20 +37,20 @@
       <artifactId>jhttpc</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>o11yphant-trace-api</artifactId>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>o11yphant-trace-otel</artifactId>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>o11yphant-trace-helper-jhttpc</artifactId>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-logging</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.commonjava.util</groupId>
-      <artifactId>o11yphant-metrics-common</artifactId>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -65,9 +65,8 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.commonjava.indy</groupId>
-      <artifactId>indy-test-fixtures-core</artifactId>
-      <scope>test</scope>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
   </dependencies>
 

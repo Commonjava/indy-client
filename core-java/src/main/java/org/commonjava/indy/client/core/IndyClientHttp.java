@@ -32,7 +32,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -41,14 +40,13 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.util.VersionInfo;
 import org.commonjava.indy.client.core.auth.IndyClientAuthenticator;
 import org.commonjava.indy.client.core.helper.HttpResources;
-import org.commonjava.indy.client.core.metric.ClientMetricManager;
-import org.commonjava.indy.client.core.metric.ClientMetrics;
+import org.commonjava.indy.client.core.o11y.metric.ClientMetricManager;
+import org.commonjava.indy.client.core.o11y.metric.ClientMetrics;
+import org.commonjava.indy.client.core.o11y.trace.ClientTracerConfiguration;
+import org.commonjava.indy.client.core.o11y.trace.SpanningHttpFactory;
 import org.commonjava.indy.inject.IndyVersioningProvider;
 import org.commonjava.indy.model.core.ArtifactStore;
 import org.commonjava.indy.model.core.io.IndyObjectMapper;
-import org.commonjava.o11yphant.jhttpc.SpanningHttpFactory;
-import org.commonjava.o11yphant.trace.TraceManager;
-import org.commonjava.o11yphant.trace.TracerConfiguration;
 import org.commonjava.util.jhttpc.HttpFactory;
 import org.commonjava.util.jhttpc.HttpFactoryIfc;
 import org.commonjava.util.jhttpc.JHttpCException;
@@ -69,15 +67,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.commonjava.indy.IndyContentConstants.CHECK_CACHE_ONLY;
 import static org.commonjava.indy.client.core.helper.HttpResources.cleanupResources;
 import static org.commonjava.indy.client.core.helper.HttpResources.entityToString;
-import static org.commonjava.indy.client.core.metric.ClientMetricConstants.HEADER_CLIENT_API;
-import static org.commonjava.indy.client.core.metric.ClientMetricConstants.HEADER_CLIENT_TRACE_ID;
 import static org.commonjava.indy.client.core.util.UrlUtils.buildUrl;
 import static org.commonjava.indy.stats.IndyVersioning.HEADER_INDY_API_VERSION;
 
@@ -121,7 +116,8 @@ public class IndyClientHttp
         this( mapper, location, apiVersion );
         this.mdcCopyMappings = mdcCopyMappings;
         metricManager = new ClientMetricManager( location );
-        factory = new SpanningHttpFactory( new HttpFactory( authenticator ), metricManager.getTraceManager() );
+        factory = new SpanningHttpFactory( new HttpFactory( authenticator ),
+                                           metricManager.getTraceManager().orElse( null ) );
     }
 
     /**
@@ -135,7 +131,8 @@ public class IndyClientHttp
         this( mapper, location, apiVersion );
 
         metricManager = new ClientMetricManager( location );
-        factory = new SpanningHttpFactory( new HttpFactory( passwordManager ), metricManager.getTraceManager() );
+        factory = new SpanningHttpFactory( new HttpFactory( passwordManager ),
+                                           metricManager.getTraceManager().orElse( null ) );
     }
 
     private IndyClientHttp( final IndyObjectMapper mapper, SiteConfig location, String apiVersion )
@@ -164,11 +161,9 @@ public class IndyClientHttp
 
         private SiteConfig location;
 
+        private ClientTracerConfiguration traceConfig;
+
         private String apiVersion;
-
-        private TracerConfiguration existedTraceConfig;
-
-        private TraceManager existedTraceManager;
 
         private Map<String, String> mdcCopyMappings;
 
@@ -206,21 +201,14 @@ public class IndyClientHttp
             return this;
         }
 
-        public Builder setExistedTraceConfig( TracerConfiguration existedTraceConfig )
-        {
-            this.existedTraceConfig = existedTraceConfig;
-            return this;
-        }
-
-        public Builder setExistedTraceManager( TraceManager traceManager )
-        {
-            this.existedTraceManager = traceManager;
-            return this;
-        }
-
         public Builder setMdcCopyMappings( Map<String, String> mdcCopyMappings )
         {
             this.mdcCopyMappings = mdcCopyMappings;
+            return this;
+        }
+
+        public Builder setTracerConfiguration( ClientTracerConfiguration clientTracerConfiguration ){
+            this.traceConfig = clientTracerConfiguration;
             return this;
         }
 
@@ -257,23 +245,15 @@ public class IndyClientHttp
                 factory = new HttpFactory( this.passwordManager );
             }
 
-            ClientMetricManager metricManager;
-            if ( this.existedTraceManager != null )
+            if ( this.traceConfig != null )
             {
-                metricManager = new ClientMetricManager( this.existedTraceManager );
-            }
-            else if ( this.existedTraceConfig != null )
-            {
-                metricManager = new ClientMetricManager( this.existedTraceConfig );
+                client.metricManager = new ClientMetricManager( this.traceConfig );
             }
             else
             {
-                metricManager = new ClientMetricManager( location );
+                client.metricManager = new ClientMetricManager( location );
             }
-
-            client.metricManager = metricManager;
-            client.factory = new SpanningHttpFactory( factory, metricManager.getTraceManager() );
-
+            client.factory = new SpanningHttpFactory( factory, client.metricManager.getTraceManager().orElse( null ) );
             return client;
         }
     }
@@ -287,14 +267,6 @@ public class IndyClientHttp
 
         addDefaultHeader( "User-Agent",
                           String.format( "Indy/%s (api: %s) via %s", indyVersion, apiVersion, hcUserAgent ) );
-    }
-
-    private String addClientTraceHeader()
-    {
-        String traceId = UUID.randomUUID().toString();
-        addDefaultHeader( HEADER_CLIENT_TRACE_ID, traceId );
-        addDefaultHeader( HEADER_CLIENT_API, String.valueOf( true ) );
-        return traceId;
     }
 
     private void addApiVersionHeader( String apiVersion )
@@ -318,24 +290,6 @@ public class IndyClientHttp
         }
     }
 
-    /**
-     * Not used since migration to jHTTPc library
-     */
-    @Deprecated
-    public void connect( final HttpClientConnectionManager connectionManager )
-    {
-        // NOP, now that we've moved to HttpFactory.
-    }
-
-    /**
-     * Not used since migration to jHTTPc library
-     */
-    @Deprecated
-    public synchronized void connect()
-    {
-        // NOP, now that we've moved to HttpFactory.
-    }
-
     public Map<String, String> head( final String path )
             throws IndyClientException
     {
@@ -347,7 +301,6 @@ public class IndyClientHttp
     {
         HttpHead request = newJsonHead( buildUrl( baseUrl, path ) );
 
-        connect();
         CloseableHttpResponse response = null;
         CloseableHttpClient client = null;
         ClientMetrics metrics = metricManager.register( request );
@@ -401,8 +354,6 @@ public class IndyClientHttp
         HttpGet request = newJsonGet( buildUrl( baseUrl, path ) );
         ClientMetrics metrics = metricManager.register( request );
 
-        connect();
-
         CloseableHttpResponse response = null;
         CloseableHttpClient client = null;
         try
@@ -450,7 +401,6 @@ public class IndyClientHttp
         HttpGet request = newJsonGet( buildUrl( baseUrl, path ) );
         ClientMetrics metrics = metricManager.register( request );
 
-        connect();
         CloseableHttpResponse response = null;
         CloseableHttpClient client = null;
         try
@@ -493,8 +443,6 @@ public class IndyClientHttp
     {
         ClientMetrics metrics = metricManager.register( req );
 
-        connect();
-
         addLoggingMDCToHeaders( req );
         CloseableHttpResponse response = null;
         try
@@ -528,8 +476,6 @@ public class IndyClientHttp
     {
         final HttpGet req = newRawGet( buildUrl( baseUrl, path ) );
         ClientMetrics metrics = metricManager.register( req );
-
-        connect();
 
         CloseableHttpResponse response = null;
         try
@@ -569,8 +515,6 @@ public class IndyClientHttp
     {
         final HttpPut put = newRawPut( buildUrl( baseUrl, path ) );
         ClientMetrics metrics = metricManager.register( put );
-
-        connect();
 
         addLoggingMDCToHeaders( put );
         final CloseableHttpClient client = newClient();
@@ -625,7 +569,6 @@ public class IndyClientHttp
         ClientMetrics metrics = metricManager.register( put );
 
         checkRequestValue( value );
-        connect();
 
         CloseableHttpResponse response = null;
         CloseableHttpClient client = null;
@@ -664,8 +607,6 @@ public class IndyClientHttp
     {
         ClientMetrics metrics = metricManager.register( request );
 
-        connect();
-
         addLoggingMDCToHeaders( request );
         CloseableHttpResponse response = null;
         try
@@ -702,7 +643,6 @@ public class IndyClientHttp
         ClientMetrics metrics = metricManager.register( req );
 
         checkRequestValue( value );
-        connect();
 
         CloseableHttpResponse response = null;
         try
@@ -759,8 +699,6 @@ public class IndyClientHttp
         ClientMetrics metrics = metricManager.register( post );
 
         checkRequestValue( value );
-
-        connect();
 
         CloseableHttpResponse response = null;
         CloseableHttpClient client = null;
@@ -822,8 +760,6 @@ public class IndyClientHttp
         ClientMetrics metrics = metricManager.register( post );
 
         checkRequestValue( value );
-
-        connect();
 
         CloseableHttpResponse response = null;
         CloseableHttpClient client = null;
@@ -887,8 +823,6 @@ public class IndyClientHttp
         HttpDelete delete = newDelete( buildUrl( baseUrl, path ) );
         ClientMetrics metrics = metricManager.register( delete );
 
-        connect();
-
         CloseableHttpResponse response = null;
         CloseableHttpClient client = null;
         try
@@ -928,8 +862,6 @@ public class IndyClientHttp
     {
         HttpDelete delete = newDelete( buildUrl( baseUrl, path ) );
         ClientMetrics metrics = metricManager.register( delete );
-
-        connect();
 
         CloseableHttpResponse response = null;
         CloseableHttpClient client = null;
@@ -983,8 +915,6 @@ public class IndyClientHttp
     {
         HttpHead request = newJsonHead( buildUrl( baseUrl, querySupplier, path ) );
         ClientMetrics metrics = metricManager.register( request );
-
-        connect();
 
         CloseableHttpResponse response = null;
         CloseableHttpClient client = null;

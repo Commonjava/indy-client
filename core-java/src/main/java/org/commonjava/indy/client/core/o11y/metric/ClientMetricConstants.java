@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.commonjava.indy.client.core.metric;
+package org.commonjava.indy.client.core.o11y.metric;
 
-public class ClientMetricConstants {
+public class ClientMetricConstants
+{
 
     public static final String CLIENT_FOLO_ADMIN = "client.folo.admin";
 
@@ -27,15 +28,10 @@ public class ClientMetricConstants {
 
     public static final String CLIENT_PROMOTE = "client.promote";
 
-    public final static String HEADER_CLIENT_API = "Indy-Client-API";
-
-    public final static String HEADER_CLIENT_TRACE_ID = "Indy-Client-Trace-Id";
-
-    public final static String HEADER_CLIENT_SPAN_ID = "Indy-Client-Span-Id";
-
     public static final String[] CLIENT_FUNCTIONS =
             { CLIENT_FOLO_ADMIN, CLIENT_FOLO_CONTENT, CLIENT_REPO_MGMT, CLIENT_CONTENT, CLIENT_PROMOTE };
 
-    private ClientMetricConstants() {
+    private ClientMetricConstants()
+    {
     }
 }
