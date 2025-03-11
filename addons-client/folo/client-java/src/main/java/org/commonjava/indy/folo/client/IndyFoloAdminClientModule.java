@@ -116,19 +116,11 @@ public class IndyFoloAdminClientModule
         throws IndyClientException
     {
         String url = UrlUtils.buildUrl("/folo/admin/batch/delete");
-        HttpResources resources = null;
-        try
-        {
-            resources = http.postRaw(url, request);
-            if (resources.getStatusCode() != HttpStatus.SC_OK)
-            {
+        try (HttpResources resources = http.postRaw(url, request)) {
+            if (resources.getStatusCode() != HttpStatus.SC_OK) {
                 throw new IndyClientException( resources.getStatusCode(), "Error deleting files: %s",
-                                           new IndyResponseErrorDetails( resources.getResponse() ) );
+                                               new IndyResponseErrorDetails( resources.getResponse() ) );
             }
-        }
-        finally
-        {
-            IOUtils.closeQuietly( resources );
         }
     }
 
