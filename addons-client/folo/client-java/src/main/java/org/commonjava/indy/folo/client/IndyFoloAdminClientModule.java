@@ -115,7 +115,13 @@ public class IndyFoloAdminClientModule
     public void deleteFilesFromStoreByTrackingID( final BatchDeleteRequest request )
         throws IndyClientException
     {
-        http.postRaw( UrlUtils.buildUrl( "/folo/admin/batch/delete" ), request );
+        String url = UrlUtils.buildUrl("/folo/admin/batch/delete");
+        try (HttpResources resources = http.postRaw(url, request)) {
+            if (resources.getStatusCode() != HttpStatus.SC_OK) {
+                throw new IndyClientException( resources.getStatusCode(), "Error deleting files: %s",
+                                               new IndyResponseErrorDetails( resources.getResponse() ) );
+            }
+        }
     }
 
     @Deprecated
