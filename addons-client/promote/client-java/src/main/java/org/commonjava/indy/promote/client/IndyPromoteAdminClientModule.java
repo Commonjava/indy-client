@@ -56,7 +56,8 @@ public class IndyPromoteAdminClientModule
     public static final String VALIDATION_RULESET_GET_BY_STOREKEY_PATH = VALIDATION_RULESET_BASEPATH + "/storekey";
 
     public static final String VALIDATION_RULESET_GET_BY_NAME_PATH = VALIDATION_RULESET_BASEPATH + "/named";
-    private static final String TRACKING = "/tracking";
+
+    private static final String TRACKING = PROMOTE_ADMIN_BASEPATH + "/tracking";
 
     public boolean reloadRules()
             throws IndyClientException
