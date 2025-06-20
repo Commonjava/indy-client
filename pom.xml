@@ -28,7 +28,7 @@
   <groupId>org.commonjava.indy</groupId>
   <artifactId>indy-clients-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.4.3-SNAPSHOT</version>
+  <version>3.4.3</version>
 
   <name>Indy :: Client APIs :: Parent</name>
   <inceptionYear>2023</inceptionYear>
@@ -42,7 +42,7 @@
     <connection>scm:git:https://github.com/commonjava/indy-client</connection>
     <developerConnection>scm:git:https://github.com/commonjava/indy-client</developerConnection>
     <url>http://github.com/Commonjava/indy-client</url>
-    <tag>HEAD</tag>
+    <tag>indy-clients-parent-3.4.3</tag>
   </scm>
 
   <properties>
@@ -95,13 +95,13 @@
       <dependency>
         <groupId>org.commonjava.indy</groupId>
         <artifactId>indy-promote-model-java</artifactId>
-        <version>3.4.3-SNAPSHOT</version>
+        <version>3.4.3</version>
       </dependency>
 
       <dependency>
         <groupId>org.commonjava.indy</groupId>
         <artifactId>indy-client-core-java</artifactId>
-        <version>3.4.3-SNAPSHOT</version>
+        <version>3.4.3</version>
       </dependency>
       <dependency>
         <groupId>org.commonjava.atlas</groupId>
