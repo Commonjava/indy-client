@@ -39,6 +39,8 @@ public class IndyStoresClientModule
 
     public static final String STORE_BASEPATH = "admin/stores";
 
+    public static final String ADD_CONSTITUENT = "addConstituent";
+
     private final Logger logger = LoggerFactory.getLogger( getClass() );
 
     public <T extends ArtifactStore> T create( final T value, final String changelog, final Class<T> type )
@@ -169,5 +171,12 @@ public class IndyStoresClientModule
                 new TypeReference<StoreListingDTO<RemoteRepository>>()
                 {
                 }  );
+    }
+
+    public boolean addConstituentToGroup( final StoreKey key, final StoreKey member )
+            throws IndyClientException
+    {
+        return http.put( UrlUtils.buildUrl( STORE_BASEPATH, key.getPackageType(), key.getType().singularEndpointName(),
+                                            key.getName(), ADD_CONSTITUENT ), member );
     }
 }
