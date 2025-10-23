@@ -61,7 +61,7 @@
     <jacksonVersion>2.20</jacksonVersion>
     <httpTestserverVersion>1.5.3</httpTestserverVersion>
     <logbackVersion>1.5.20</logbackVersion>
-    <otelVersion>1.19.0</otelVersion>
+    <otelVersion>1.32.0</otelVersion>
   </properties>
 
   <dependencyManagement>
