@@ -43,7 +43,7 @@ jobs:
         # server-password: SONATYPE_BOT_TOKEN
 
     - name: maven-settings-xml-action
-      uses: whelk-io/maven-settings-xml-action@v14
+      uses: whelk-io/maven-settings-xml-action@v22
       if: ${{ github.event.repository.fork == false }}
       with:
         servers: '[{ "id": "central-portal-snapshots", "username": "${{ secrets.SONATYPE_BOT_USERNAME}}", "password": "${{ secrets.SONATYPE_BOT_TOKEN}}" }]'
