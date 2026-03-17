@@ -52,7 +52,7 @@
     <jhttpcVersion>1.16</jhttpcVersion>
     <atlasVersion>1.2.1</atlasVersion>
     <indyModelVersion>1.5</indyModelVersion>
-    <httpclientVersion>4.5.13</httpclientVersion>
+    <httpclientVersion>4.5.14</httpclientVersion>
     <slf4jVersion>2.0.17</slf4jVersion>
     <commonsioVersion>2.21.0</commonsioVersion>
     <swaggerVersion>1.6.6</swaggerVersion>
