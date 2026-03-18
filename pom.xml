@@ -60,7 +60,7 @@
     <!-- Note jackson-core/databind was published as 2.20.0 but annotations was 2.20 -->
     <jacksonVersion>2.20</jacksonVersion>
     <httpTestserverVersion>1.5.3</httpTestserverVersion>
-    <logbackVersion>1.5.20</logbackVersion>
+    <logbackVersion>1.5.32</logbackVersion>
     <otelVersion>1.60.1</otelVersion>
   </properties>
 
