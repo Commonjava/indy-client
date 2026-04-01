@@ -49,7 +49,7 @@
     <projectOwner>Red Hat, Inc.</projectOwner>
     <projectEmail>https://github.com/Commonjava/indy-client</projectEmail>
     <javaVersion>11</javaVersion>
-    <jhttpcVersion>1.16</jhttpcVersion>
+    <jhttpcVersion>1.17</jhttpcVersion>
     <atlasVersion>1.2.2</atlasVersion>
     <indyModelVersion>1.5</indyModelVersion>
     <httpclientVersion>4.5.14</httpclientVersion>
