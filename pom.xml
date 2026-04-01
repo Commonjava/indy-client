@@ -50,7 +50,7 @@
     <projectEmail>https://github.com/Commonjava/indy-client</projectEmail>
     <javaVersion>11</javaVersion>
     <jhttpcVersion>1.16</jhttpcVersion>
-    <atlasVersion>1.2.1</atlasVersion>
+    <atlasVersion>1.2.2</atlasVersion>
     <indyModelVersion>1.5</indyModelVersion>
     <httpclientVersion>4.5.14</httpclientVersion>
     <slf4jVersion>2.0.17</slf4jVersion>
